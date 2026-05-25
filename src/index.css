@@ -1,0 +1,35 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: none; /* IMPORTANT */
+  color: white;
+}
+
+#root {
+  position: relative;
+  min-height: 100vh;
+  z-index: 1;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+
+  background-image: url("/image.png");
+  background-size: cover;
+  background-position: center;
+
+  filter: blur(10px) brightness(0.5);
+  opacity: 1;
+
+  z-index: -10; /* VERY IMPORTANT */
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+
+  background: rgba(10, 15, 25, 0.65);
+
+  z-index: -9;
+}
