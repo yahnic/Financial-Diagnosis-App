@@ -6,6 +6,21 @@ import Result from "./pages/Result";
 import Dashboard from "./pages/Dashboard";
 
 import ThemeToggle from "./components/ThemeToggle";
+import { Helmet } from "react-helmet";
+
+<Helmet>
+  <title>Financial Diagnosis App | HappyInvest</title>
+
+  <meta
+    name="description"
+    content="Discover your investor profile and get personalized investment recommendations."
+  />
+
+  <meta
+    name="keywords"
+    content="investment, Nigeria, finance, stocks, wealth"
+  />
+</Helmet>;
 
 function App() {
   const [page, setPage] = useState("home");
