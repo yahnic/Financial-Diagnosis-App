@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import CompoundSimulator from "./pages/games/CompoundSimulator";
 import InflationSurvivor from "./pages/games/InflationSurvivor";
 import ThemeToggle from "./components/ThemeToggle";
+import BudgetBoss from "./pages/games/BudgetBoss";
 
 function App() {
   const [page, setPage] = useState("home");
@@ -89,6 +90,7 @@ function App() {
           <button onClick={() => setPage("inflation")}>
             Inflation Survivor
           </button>
+          <button onClick={() => setPage("budget")}>Budget Boss</button>
         </nav>
 
         {/* PAGE AREA */}
@@ -118,6 +120,7 @@ function App() {
           {page === "dashboard" && <Dashboard />}
           {page === "compound" && <CompoundSimulator />}
           {page === "inflation" && <InflationSurvivor />}
+          {page === "budget" && <BudgetBoss />}
         </main>
       </div>
     </>

@@ -9,16 +9,10 @@ export default function GamesHub({ openGame }) {
         <button onClick={() => openGame("compound")}>Play</button>
       </div>
 
-      {/* <div className="card">
-        <h3>Inflation Survivor</h3>
-
-        <button onClick={() => openGame("inflation")}>Play</button>
-      </div> */}
-
       <div className="card">
         <h3>Budget Boss</h3>
 
-        <button disabled>Coming Soon</button>
+        <button onClick={() => openGame("budget")}>Play</button>
       </div>
 
       <div className="card">

@@ -1,74 +1,75 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const years = [
-  { year: 2020, inflation: 13 },
-  { year: 2021, inflation: 15 },
-  { year: 2022, inflation: 21 },
-  { year: 2023, inflation: 28 },
-  { year: 2024, inflation: 33 },
-  { year: 2025, inflation: 24 },
-  { year: 2026, inflation: 15.68 },
-];
+import GameNewsCard from "../../components/GameNewsCard";
 
-const assetReturns = {
-  Cash: [0, 0, 0, 0, 0],
+import { inflationEvents } from "../../data/inflationEvents";
 
-  Dollar: [15, 12, 20, 25, 18],
+import { assetReturns } from "../../data/assetReturns";
 
-  MMF: [10, 11, 12, 13, 12, 15, 18, 20, 22, 25],
+import { saveGameResult } from "../../utils/gameStorage";
 
-  "FGN Bond": [12, 10, 13, 16, 15, 18, 20, 22, 25, 28],
+import { gameGrade } from "../../utils/gameGrade";
 
-  "NGX Dividend Stocks": [18, 15, 42, 20, 25],
-  "NGX Growth Stocks": [10, 5, 55, 30, 25, 50, 60, 70, 80, 90, 100],
-
-  "Treasury Bills": [11, 13, 15, 18, 20],
-
-  "NGX Stocks": [18, -5, 30, 12, 50, 60, 70, 80, 90, 100],
-
-  "US ETF": [10, 8, -12, 20, 15],
-
-  Bitcoin: [150, -60, 90, -30, 70],
-  Business: [15, 18, 25, -15, -20, 35, 30],
-};
-
-const difficultySettings = {
-  Beginner: {
-    years: years.slice(0, 3),
-    start: 100_000,
-  },
-
-  Investor: {
-    years: years.slice(0, 5),
-    start: 100_000,
-  },
-
-  Expert: {
-    years,
-    start: 100_000,
-  },
-};
+import { getAchievements } from "../../utils/gameAchievements";
 
 export default function InflationSurvivor() {
+  const [started, setStarted] = useState(false);
+
   const [difficulty, setDifficulty] = useState("Investor");
-
-  const activeYears = difficultySettings[difficulty].years;
-
-  const startingAmount = difficultySettings[difficulty].start;
 
   const [round, setRound] = useState(0);
 
-  const [value, setValue] = useState(startingAmount);
+  const [value, setValue] = useState(100000);
 
   const [history, setHistory] = useState([]);
 
   const [finished, setFinished] = useState(false);
-  const [started, setStarted] = useState(false);
+
+  const beginnerYears = inflationEvents.slice(0, 3);
+
+  const investorYears = inflationEvents.slice(0, 5);
+
+  const expertYears = [...inflationEvents, ...inflationEvents];
+
+  const gameYears =
+    difficulty === "Beginner"
+      ? beginnerYears
+      : difficulty === "Investor"
+        ? investorYears
+        : expertYears;
+
+  const grade = gameGrade(value);
+
+  const achievements = getAchievements(history, value);
+
+  useEffect(() => {
+    if (!finished) return;
+
+    const alreadySaved = sessionStorage.getItem("inflationSaved");
+
+    if (alreadySaved) return;
+
+    saveGameResult({
+      game: "Inflation Survivor",
+
+      score: Math.round(value),
+
+      grade,
+
+      achievements,
+
+      date: new Date().toISOString(),
+    });
+
+    sessionStorage.setItem("inflationSaved", "true");
+  }, [finished]);
 
   function play(asset) {
-    const current = activeYears[round];
+    const current = gameYears[round];
 
-    const assetReturn = assetReturns[asset][round];
+    const assetHistory = assetReturns[asset];
+
+    const assetReturn = assetHistory[round % assetHistory.length];
 
     const nominal = value * (1 + assetReturn / 100);
 
@@ -76,10 +77,15 @@ export default function InflationSurvivor() {
 
     const result = {
       year: current.year,
+
       asset,
-      return: assetReturn,
+
       inflation: current.inflation,
+
+      return: assetReturn,
+
       nominal: Math.round(nominal),
+
       real: Math.round(real),
     };
 
@@ -87,7 +93,7 @@ export default function InflationSurvivor() {
 
     setValue(real);
 
-    if (round === activeYears.length - 1) {
+    if (round === gameYears.length - 1) {
       setFinished(true);
     } else {
       setRound((prev) => prev + 1);
@@ -95,35 +101,30 @@ export default function InflationSurvivor() {
   }
 
   function restart() {
-    const start = difficultySettings[difficulty].start;
+    sessionStorage.removeItem("inflationSaved");
+
+    setStarted(false);
 
     setRound(0);
 
-    setValue(start);
+    setValue(100000);
 
     setHistory([]);
 
     setFinished(false);
   }
 
-  function changeDifficulty(level) {
-    setDifficulty(level);
+  /* =========================
+     START SCREEN
+  ========================= */
 
-    setRound(0);
-
-    setValue(difficultySettings[level].start);
-
-    setHistory([]);
-
-    setFinished(false);
-  }
   if (!started) {
     return (
       <div className="container">
         <div className="card">
           <h1>Inflation Survivor</h1>
 
-          <p>Can you protect ₦100,000 from inflation?</p>
+          <p>Can you protect ₦100,000 from inflation and grow your wealth?</p>
 
           <h3>Select Difficulty</h3>
 
@@ -146,44 +147,48 @@ export default function InflationSurvivor() {
       </div>
     );
   }
-  if (finished) {
-    const purchasingPowerChange =
-      ((value - startingAmount) / startingAmount) * 100;
 
+  /* =========================
+     END SCREEN
+  ========================= */
+
+  if (finished) {
     return (
       <div className="container">
-        <h1>Inflation Survivor</h1>
-
         <div className="card">
-          <h2>Game Complete 🎉</h2>
+          <h1>Game Complete</h1>
 
-          <h3>Final Purchasing Power</h3>
+          <h2>Final Purchasing Power</h2>
 
           <h1>₦{Math.round(value).toLocaleString()}</h1>
 
-          <p>Started with: ₦{startingAmount.toLocaleString()}</p>
+          <h2>Grade: {grade}</h2>
 
-          <p>Purchasing Power Change: {purchasingPowerChange.toFixed(1)}%</p>
+          <h3>Achievements</h3>
 
-          {purchasingPowerChange > 0 ? (
-            <p>✅ You beat inflation.</p>
+          {achievements.length > 0 ? (
+            <ul>
+              {achievements.map((achievement) => (
+                <li key={achievement}>🏆 {achievement}</li>
+              ))}
+            </ul>
           ) : (
-            <p>⚠️ Inflation defeated your wealth.</p>
+            <p>No achievements unlocked yet.</p>
           )}
 
           <button onClick={restart}>Play Again</button>
         </div>
 
         <div className="card">
-          <h2>History</h2>
+          <h2>Investment History</h2>
 
           {history.map((item, index) => (
             <div key={index}>
               <p>
                 <strong>{item.year}</strong>
-                {" — "}
-                {item.asset}
               </p>
+
+              <p>Asset: {item.asset}</p>
 
               <p>Return: {item.return}%</p>
 
@@ -201,85 +206,49 @@ export default function InflationSurvivor() {
     );
   }
 
-  const current = activeYears[round];
+  /* =========================
+     GAME SCREEN
+  ========================= */
+
+  const current = gameYears[round];
 
   return (
     <div className="container">
       <h1>Inflation Survivor</h1>
 
       <div className="card">
-        <h3>Select Difficulty</h3>
+        <h2>Year: {current.year}</h2>
 
-        <select
-          value={difficulty}
-          onChange={(e) => changeDifficulty(e.target.value)}
-        >
-          <option value="Beginner">Beginner (3 Years)</option>
+        <h3>Inflation: {current.inflation}%</h3>
 
-          <option value="Investor">Investor (5 Years)</option>
-
-          <option value="Expert">Expert (7 Years)</option>
-        </select>
-      </div>
-
-      <div className="card">
-        <h2>
-          Year {round + 1} of {activeYears.length}
-        </h2>
-
-        <h3>{current.year}</h3>
-
-        <p>
-          Inflation: <strong>{current.inflation}%</strong>
-        </p>
-
-        <h2>Current Purchasing Power</h2>
+        <h2>Current Wealth</h2>
 
         <h1>₦{Math.round(value).toLocaleString()}</h1>
 
-        <p>Choose an asset for this year.</p>
+        <p>
+          Round {round + 1}
+          {" / "}
+          {gameYears.length}
+        </p>
       </div>
 
+      <GameNewsCard headline={current.headline} effect={current.effect} />
+
       <div className="card">
-        <h2>Assets</h2>
+        <h2>Choose an Asset</h2>
 
         {Object.keys(assetReturns).map((asset) => (
           <button
             key={asset}
             onClick={() => play(asset)}
             style={{
-              margin: "8px",
-              padding: "10px 14px",
+              margin: "10px",
             }}
           >
             {asset}
           </button>
         ))}
       </div>
-
-      {history.length > 0 && (
-        <div className="card">
-          <h2>Progress</h2>
-
-          {history.map((item, index) => (
-            <div key={index}>
-              <p>
-                {item.year}
-                {" - "}
-                {item.asset}
-              </p>
-
-              <p>
-                Return: {item.return}% | Inflation: {item.inflation}%
-              </p>
-
-              <p>Purchasing Power: ₦{item.real.toLocaleString()}</p>
-
-              <hr />
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
