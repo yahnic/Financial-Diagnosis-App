@@ -1,26 +1,14 @@
 import { useEffect, useState } from "react";
 
+import { Helmet } from "react-helmet";
+
 import Home from "./pages/Home";
 import Diagnosis from "./pages/Diagnosis";
 import Result from "./pages/Result";
 import Dashboard from "./pages/Dashboard";
-
+import CompoundSimulator from "./pages/games/CompoundSimulator";
+import InflationSurvivor from "./pages/games/InflationSurvivor";
 import ThemeToggle from "./components/ThemeToggle";
-import { Helmet } from "react-helmet";
-
-<Helmet>
-  <title>Financial Diagnosis App | HappyInvest</title>
-
-  <meta
-    name="description"
-    content="Discover your investor profile and get personalized investment recommendations."
-  />
-
-  <meta
-    name="keywords"
-    content="investment, Nigeria, finance, stocks, wealth"
-  />
-</Helmet>;
 
 function App() {
   const [page, setPage] = useState("home");
@@ -29,8 +17,11 @@ function App() {
 
   const [dark, setDark] = useState(false);
 
-  // 🌐 OFFLINE / ONLINE STATE
   const [online, setOnline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    document.body.className = dark ? "dark" : "light";
+  }, [dark]);
 
   useEffect(() => {
     const handleOnline = () => setOnline(true);
@@ -49,50 +40,87 @@ function App() {
   }, []);
 
   return (
-    <div className={dark ? "dark" : "light"}>
-      {/* 🌙 Theme Toggle */}
-      <ThemeToggle dark={dark} setDark={setDark} />
+    <>
+      <Helmet>
+        <title>Financial Diagnosis App | HappyInvest</title>
 
-      {/* 🌐 Offline Banner */}
-      {!online && (
-        <div className="offline-banner">
-          You are offline — data is saved locally
-        </div>
-      )}
+        <meta
+          name="description"
+          content="Discover your investor profile and get personalized investment recommendations."
+        />
 
-      {/* NAVIGATION */}
-      <div className="nav">
-        <button onClick={() => setPage("home")}>Home</button>
+        <meta
+          name="keywords"
+          content="investment, Nigeria, finance, stocks, wealth"
+        />
+      </Helmet>
 
-        <button onClick={() => setPage("diagnosis")}>Diagnosis</button>
+      <div className="app-shell">
+        {/* TOP BAR */}
 
-        <button onClick={() => setPage("dashboard")}>Dashboard</button>
+        <header className="topbar">
+          <div>
+            <h2>HappyInvest</h2>
+          </div>
+
+          <ThemeToggle dark={dark} setDark={setDark} />
+        </header>
+
+        {/* OFFLINE */}
+
+        {!online && (
+          <div className="offline-banner">
+            You are offline — data is saved locally
+          </div>
+        )}
+
+        {/* NAV */}
+
+        <nav className="nav">
+          <button onClick={() => setPage("home")}>Home</button>
+
+          <button onClick={() => setPage("diagnosis")}>Diagnosis</button>
+
+          <button onClick={() => setPage("dashboard")}>Dashboard</button>
+
+          <button onClick={() => setPage("compound")}>
+            Compound Simulator
+          </button>
+          <button onClick={() => setPage("inflation")}>
+            Inflation Survivor
+          </button>
+        </nav>
+
+        {/* PAGE AREA */}
+
+        <main className="page-wrapper">
+          {page === "home" && <Home start={() => setPage("diagnosis")} />}
+
+          {page === "diagnosis" && (
+            <Diagnosis
+              answers={answers}
+              setAnswers={setAnswers}
+              next={() => setPage("result")}
+            />
+          )}
+
+          {page === "result" && (
+            <Result
+              answers={answers}
+              restart={() => {
+                setAnswers({});
+
+                setPage("home");
+              }}
+            />
+          )}
+
+          {page === "dashboard" && <Dashboard />}
+          {page === "compound" && <CompoundSimulator />}
+          {page === "inflation" && <InflationSurvivor />}
+        </main>
       </div>
-
-      {/* PAGES */}
-
-      {page === "home" && <Home start={() => setPage("diagnosis")} />}
-
-      {page === "diagnosis" && (
-        <Diagnosis
-          answers={answers}
-          setAnswers={setAnswers}
-          next={() => setPage("result")}
-        />
-      )}
-
-      {page === "result" && (
-        <Result
-          answers={answers}
-          restart={() => {
-            setAnswers({});
-            setPage("home");
-          }}
-        />
-      )}
-
-      {page === "dashboard" && <Dashboard />}
-    </div>
+    </>
   );
 }
 

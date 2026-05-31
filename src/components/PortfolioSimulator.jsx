@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 export default function PortfolioSimulator({ allocation }) {
-  const [amount, setAmount] = useState(100000);
+  const [amount, setAmount] = useState(100_000);
 
   const years = 5;
 

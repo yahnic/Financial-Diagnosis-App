@@ -5,7 +5,7 @@ export default function MonteCarlo() {
     let arr = [];
 
     for (let i = 0; i < 300; i++) {
-      let amount = 100000;
+      let amount = 100_000;
 
       for (let y = 0; y < 5; y++) {
         const growth = Math.random() * 30 - 5;

@@ -33,3 +33,137 @@ body::after {
 
   z-index: -9;
 }
+
+/* APP */
+
+.app-shell {
+  min-height: 100vh;
+
+  padding: 24px;
+}
+
+/* HEADER */
+
+.topbar {
+  max-width: 1400px;
+
+  margin: auto;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 24px;
+}
+
+/* NAV */
+
+.nav {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  align-items: center;
+
+  margin-top: 30px;
+
+  margin-bottom: 40px;
+}
+
+/* BUTTON */
+
+.nav button {
+  margin-right: 18px; /* ← REAL spacing */
+
+  margin-bottom: 12px;
+
+  padding: 18px 34px;
+
+  min-width: 170px;
+
+  border: none;
+
+  border-radius: 18px;
+
+  background: #2f2d89;
+
+  color: white;
+
+  font-size: 18px;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+.nav button:last-child {
+  margin-right: 0;
+}
+
+.nav button:hover {
+  transform: translateY(-3px);
+
+  background: #4450d6;
+}
+
+/* HOVER */
+
+.nav button:hover {
+  transform: translateY(-2px);
+
+  background: rgba(80, 140, 255, 0.25);
+}
+
+/* ACTIVE */
+
+.nav button:active {
+  transform: scale(0.97);
+}
+
+/* CONTENT */
+
+.page-wrapper {
+  max-width: 1400px;
+
+  margin: auto;
+
+  padding: 20px;
+}
+
+/* OFFLINE */
+
+.offline-banner {
+  max-width: 1400px;
+
+  margin: auto;
+
+  margin-bottom: 20px;
+
+  padding: 12px;
+
+  border-radius: 12px;
+
+  background: #ffb300;
+
+  color: black;
+
+  text-align: center;
+}
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+  .app-shell {
+    padding: 14px;
+  }
+
+  .page-wrapper {
+    padding: 10px;
+  }
+
+  .nav {
+    overflow-x: auto;
+  }
+}
