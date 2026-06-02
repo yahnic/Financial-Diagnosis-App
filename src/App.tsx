@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { Helmet } from "react-helmet";
+//import { Helmet } from "react-helmet";
+import { HelmetProvider } from "react-helmet-async";
 
 import Home from "./pages/Home";
 import Diagnosis from "./pages/Diagnosis";
@@ -10,6 +11,8 @@ import CompoundSimulator from "./pages/games/CompoundSimulator";
 import InflationSurvivor from "./pages/games/InflationSurvivor";
 import ThemeToggle from "./components/ThemeToggle";
 import BudgetBoss from "./pages/games/BudgetBoss";
+import DebtRace from "./pages/games/DebtRace";
+import PortfolioBuilder from "./pages/games/PortfolioBuilder";
 
 function App() {
   const [page, setPage] = useState("home");
@@ -42,7 +45,7 @@ function App() {
 
   return (
     <>
-      <Helmet>
+      <HelmetProvider>
         <title>Financial Diagnosis App | HappyInvest</title>
 
         <meta
@@ -54,7 +57,7 @@ function App() {
           name="keywords"
           content="investment, Nigeria, finance, stocks, wealth"
         />
-      </Helmet>
+      </HelmetProvider>
 
       <div className="app-shell">
         {/* TOP BAR */}
@@ -91,6 +94,10 @@ function App() {
             Inflation Survivor
           </button>
           <button onClick={() => setPage("budget")}>Budget Boss</button>
+          <button onClick={() => setPage("debt")}> Debt Race</button>
+          <button onClick={() => setPage("portfolio")}>
+            Portfolio Builder
+          </button>
         </nav>
 
         {/* PAGE AREA */}
@@ -121,6 +128,8 @@ function App() {
           {page === "compound" && <CompoundSimulator />}
           {page === "inflation" && <InflationSurvivor />}
           {page === "budget" && <BudgetBoss />}
+          {page === "debt" && <DebtRace />}
+          {page === "portfolio" && <PortfolioBuilder />}
         </main>
       </div>
     </>
