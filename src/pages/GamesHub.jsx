@@ -21,6 +21,18 @@ export default function GamesHub({ openGame }) {
       </div>
 
       <div className="card">
+        <h3>Market Cycle</h3>
+
+        <button onClick={() => openGame("market")}>Play</button>
+      </div>
+
+      <div className="card">
+        <h3>Stock Box</h3>
+
+        <button onClick={() => openGame("stock")}>Play</button>
+      </div>
+
+      <div className="card">
         <h3>Inflation Survivor</h3>
 
         <p>Can you protect ₦100,000 from Nigerian inflation?</p>

@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
-
-//import { Helmet } from "react-helmet";
 import { HelmetProvider } from "react-helmet-async";
-
 import Home from "./pages/Home";
 import Diagnosis from "./pages/Diagnosis";
 import Result from "./pages/Result";
@@ -13,6 +10,8 @@ import ThemeToggle from "./components/ThemeToggle";
 import BudgetBoss from "./pages/games/BudgetBoss";
 import DebtRace from "./pages/games/DebtRace";
 import PortfolioBuilder from "./pages/games/PortfolioBuilder";
+import StockSandboxNG from "./pages/games/StockSandboxNG";
+import MarketCycleSimulator from "./pages/games/MarketCycleSimulator";
 
 function App() {
   const [page, setPage] = useState("home");
@@ -64,7 +63,7 @@ function App() {
 
         <header className="topbar">
           <div>
-            <h2>HappyInvest</h2>
+            <h2>HappyInvest.ng</h2>
           </div>
 
           <ThemeToggle dark={dark} setDark={setDark} />
@@ -80,7 +79,10 @@ function App() {
 
         {/* NAV */}
 
-        <nav className="nav">
+        <nav
+          className="nav"
+          style={{ display: "flex", flexWrap: "wrap", gap: "3px" }}
+        >
           <button onClick={() => setPage("home")}>Home</button>
 
           <button onClick={() => setPage("diagnosis")}>Diagnosis</button>
@@ -95,6 +97,10 @@ function App() {
           </button>
           <button onClick={() => setPage("budget")}>Budget Boss</button>
           <button onClick={() => setPage("debt")}> Debt Race</button>
+          <button onClick={() => setPage("market")}>
+            Market Cycle Simulator
+          </button>
+          <button onClick={() => setPage("stock")}>Stock Sandbox NG</button>
           <button onClick={() => setPage("portfolio")}>
             Portfolio Builder
           </button>
@@ -130,6 +136,8 @@ function App() {
           {page === "budget" && <BudgetBoss />}
           {page === "debt" && <DebtRace />}
           {page === "portfolio" && <PortfolioBuilder />}
+          {page === "market" && <MarketCycleSimulator />}
+          {page === "stock" && <StockSandboxNG />}
         </main>
       </div>
     </>
