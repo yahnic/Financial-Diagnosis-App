@@ -12,6 +12,9 @@ import DebtRace from "./pages/games/DebtRace";
 import PortfolioBuilder from "./pages/games/PortfolioBuilder";
 import StockSandboxNG from "./pages/games/StockSandboxNG";
 import MarketCycleSimulator from "./pages/games/MarketCycleSimulator";
+import StartupSimulator from "./pages/games/StartupSimulator";
+import CashFlowLadder from "./pages/games/CashFlowLadder";
+import DealFlow from "./pages/games/DealFlow";
 
 function App() {
   const [page, setPage] = useState("home");
@@ -104,6 +107,9 @@ function App() {
           <button onClick={() => setPage("portfolio")}>
             Portfolio Builder
           </button>
+          <button onClick={() => setPage("startup")}>Startup Builder</button>
+          <button onClick={() => setPage("cashflow")}>Cashflow Ladder</button>
+          <button onClick={() => setPage("dealflow")}>Deal Flow</button>
         </nav>
 
         {/* PAGE AREA */}
@@ -138,6 +144,9 @@ function App() {
           {page === "portfolio" && <PortfolioBuilder />}
           {page === "market" && <MarketCycleSimulator />}
           {page === "stock" && <StockSandboxNG />}
+          {page === "startup" && <StartupSimulator />}
+          {page === "cashflow" && <CashFlowLadder />}
+          {page === "dealflow" && <DealFlow />}
         </main>
       </div>
     </>
